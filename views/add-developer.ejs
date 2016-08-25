@@ -784,13 +784,13 @@
                     <label for="upcoming_projects">Number of upcoming projects</label>
                     <input id="upcoming_projects" name="upcoming_projects" data-toggle="touch-spin" class="form-control" data-min="0" data-max="2147483647" data-step="1" data-decimals="0" type="text" value="10" required/>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group required">
                     <label class="control-label">Short Description</label>
                       <input id="short_desc" name="short_desc" type="text" class="form-control" placeholder="Enter a short description about the developer (max 100 characters)" maxlength="100" required>
                   </div>
-                  <div class="form-group">
-                    <label class="control-label">Full Description</label>
-                    <textarea class="form-control" rows="5" name="long_desc" placeholder="Enter full description about the developer (max 1000 characters)" maxlength="1000" required></textarea>
+                  <div class="form-group required">
+                    <label for="long_desc" lass="control-label">Full Description</label>
+                    <textarea class="form-control" rows="5" id="long_desc" name="long_desc" placeholder="Enter full description about the developer (max 1000 characters)" maxlength="1000" required></textarea>
                   </div>
                   <br/><br/>
                   <h4 class="page-section-heading">Developer Contact</h4>

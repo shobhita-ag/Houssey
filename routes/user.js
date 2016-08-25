@@ -39,13 +39,21 @@ module.exports.addPost = function(req, res, next) {
         });
       else {
         var encryptedPassword = bcrypt.hashSync(req.body.password, null, null);
+        var data = [
+          req.body.username,
+          req.body.name,
+          encryptedPassword,
+          req.body.address,
+          req.body.email,
+          req.body.phone,
+          USER_STATUS,
+          req.body.user_type
+        ]
+        var insertUserQuery = "INSERT INTO user (user_type_id, username, name, password, address, \
+        email_address, phone, status, created_date) SELECT id, ?, ?, ?, ?, ?, ?, ?, now() \
+        FROM user_type WHERE name = ?";
 
-        var insertUserQuery = "INSERT INTO user (user_type_id, username, name, password, address, email_address, phone, status, created_date) \
-        SELECT id, ?, ?, ?, ?, ?, ?, ?, now() \
-        FROM user_type \
-        WHERE name = ?";
-
-        connection.query(insertUserQuery, [req.body.username, req.body.name, encryptedPassword , req.body.address, req.body.email, req.body.phone, USER_STATUS, req.body.user_type], function(err, rows) {
+        connection.query(insertUserQuery, data, function(err, rows) {
           if(err) {
             console.log("Error inserting row into the user table: %s", err);
             return res.status(500).send('Error connecting to database.');

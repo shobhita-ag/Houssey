@@ -36,21 +36,40 @@ module.exports.addPost = function(req, res, next) {
     var date = moment(req.body.est_date, 'DD/MM/YYYY');
     console.log("date: %s", date);
 
-    //TODO: change now() to date for established_date
+    var data = [
+      req.body.name,
+      req.body.address,
+      req.body.est_date,
+      req.body.completed_projects,
+      req.body.upcoming_projects,
+      req.body.ongoing_projects,
+      req.body.short_desc,
+      req.body.long_desc,
+      req.user.username
+    ]
     var insertDevQuery = "INSERT INTO developer(name, address, established_date, no_of_completed_projects, \
     no_of_upcoming_projects, no_of_ongoing_projects, short_desc, long_desc, created_by, created_date) \
-    VALUES (?, ?, now(), ?, ?, ?, ?, ?, ?, now())";
-    connection.query(insertDevQuery, [req.body.name, req.body.address, req.body.completed_projects, req.body.upcoming_projects, req.body.ongoing_projects, req.body.short_desc, req.body.long_desc, req.user.username], function(err, rows) {
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
+
+    connection.query(insertDevQuery, data, function(err, rows) {
       if(err) {
         console.log("Error inserting row into the developer table: %s", err);
         return res.status(500).send('Error connecting to database.');
       }
 
+      var contactData = [
+        rows.insertId,
+        req.body.contact_name,
+        req.body.contact_address,
+        req.body.contact_email,
+        req.body.contact_phone,
+        req.user.username
+      ]
       var insertDevContactQuery = "INSERT INTO developer_contact(developer_id, name, address, email_address, \
       phone, created_by, created_date) \
       VALUES (?, ?, ?, ?, ?, ?, now())";
       console.log("developer rows.insertId : %d", rows.insertId);
-      connection.query(insertDevContactQuery, [rows.insertId, req.body.contact_name, req.body.contact_address, req.body.contact_email, req.body.contact_phone, req.user.username], function(err, rows) {
+      connection.query(insertDevContactQuery, contactData, function(err, rows) {
         if(err) {
           console.log("Error inserting row into the developer contact table: %s", err);
           return res.status(500).send('Error connecting to database.');

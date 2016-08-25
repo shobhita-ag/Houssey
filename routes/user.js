@@ -7,6 +7,26 @@ const USER_STATUS = 1;
 
 //TODO: change error messages to generic errors
 module.exports.addPost = function(req, res, next) {
+
+  //form validation
+  req.checkBody('username', 'Username is not valid (max characters allowed:100)').notEmpty().isLength({ min: 1, max: 10 });
+  req.checkBody('name', 'Name is not valid (max characters allowed:100)').notEmpty().isLength({ min: 1, max: 10 });
+  req.checkBody('address', 'Address is not valid (max characters allowed:255)').notEmpty().isLength({ min: 1, max: 255 });;
+  req.checkBody('password', 'Password is not valid (max characters allowed:100)').notEmpty().isLength({ min: 1, max: 100 });
+  req.checkBody('email', 'Contact Email address is not valid (max characters allowed:255)').notEmpty().isEmail().isLength({ min: 1, max: 255 });
+  req.checkBody('phone', 'Phone number is not a valid IN number').notEmpty().isMobilePhone("en-IN");
+  req.checkBody('user_type', 'User type is not valid').notEmpty();
+
+  // check the validation object for errors
+  var errors = req.validationErrors();
+  console.log(errors);
+  if (errors) {
+    res.render('add-user', {
+      user : req.user,
+      message : errors
+    });
+    return;
+  }
   pool.getConnection(function(err, connection) {
     connection.query("SELECT * FROM user WHERE username = ?",[req.body.username], function(err, rows) {
       if(err)
@@ -14,10 +34,9 @@ module.exports.addPost = function(req, res, next) {
 
       if(rows.length)
         res.render('add-user.ejs', {
-          message : 'That username is already taken.', //error message
+          message : [{ msg : 'That username is already taken.' }], //error message
           user : req.user
         });
-
       else {
         var encryptedPassword = bcrypt.hashSync(req.body.password, null, null);
 
@@ -44,7 +63,6 @@ module.exports.addPost = function(req, res, next) {
 module.exports.addGet = function(req, res, next) {
   //res.sendFile(express.static(path.join(__dirname, '../public/add-user.html')));
   res.render('add-user.ejs', {
-    message : '',
     user : req.user // get the user out of session and pass to template
   });
 }

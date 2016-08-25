@@ -6,6 +6,31 @@ var moment = require('moment');
 
 //TODO: change error messages to generic errors
 module.exports.addPost = function(req, res, next) {
+
+  //form validation
+  req.checkBody('name', 'Name is not valid (max characters allowed:100)').notEmpty().isLength({ min: 1, max: 100 });
+  req.checkBody('address', 'Address is not valid (max characters allowed:255)').notEmpty().isLength({ min: 1, max: 255 });;
+  req.checkBody('est_date', 'Established Date is not valid').notEmpty();
+  req.checkBody('completed_projects', 'Number of completed projects is not valid').notEmpty().isInt({ min: 1, max: 2147483647 });
+  req.checkBody('upcoming_projects', 'Number of upcoming projects is not valid').notEmpty().isInt({ min: 1, max: 2147483647 });
+  req.checkBody('ongoing_projects', 'Number of ongoing projects is not valid').notEmpty().isInt({ min: 1, max: 2147483647 });
+  req.checkBody('short_desc', 'Short description of the developer is not valid (max characters allowed:100)').notEmpty().isLength({ min: 1, max: 100 });
+  req.checkBody('long_desc', 'Long description of the developer is not valid (max characters allowed:1000)').notEmpty().isLength({ min: 1, max: 1000 });
+  req.checkBody('contact_name', 'Contact Name is not valid (max characters allowed:100)').notEmpty().isLength({ min: 1, max: 100 });
+  req.checkBody('contact_address', 'Contact Address is not valid (max characters allowed:255)').notEmpty().isLength({ min: 1, max: 255 });
+  req.checkBody('contact_email', 'Contact Email address is not valid (max characters allowed:255)').notEmpty().isEmail().isLength({ min: 1, max: 255 });;
+  req.checkBody('contact_phone', 'Contact Phone is not a valid IN number').notEmpty().isMobilePhone("en-IN");
+
+  // check the validation object for errors
+  var errors = req.validationErrors();
+  console.log(errors);
+  if (errors) {
+    res.render('add-developer', {
+      user : req.user,
+      message : errors
+    });
+    return;
+  }
   pool.getConnection(function(err, connection) {
 
     var date = moment(req.body.est_date, 'DD/MM/YYYY');

@@ -6,6 +6,7 @@ var express  = require('express');
 var session  = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var validator = require('express-validator');
 var morgan = require('morgan');
 var path = require('path');
 var passport = require('passport');
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 app.use(bodyParser.json());
+app.use(validator());
 
 app.set('view engine', 'ejs'); // set up ejs for templating
 app.engine('html', require('ejs').renderFile);

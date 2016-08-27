@@ -25,10 +25,8 @@ module.exports.addPost = function(req, res, next) {
   var errors = req.validationErrors();
   console.log(errors);
   if (errors) {
-    res.render('add-developer', {
-      user : req.user,
-      message : errors
-    });
+    req.flash('addDeveloperErrors', errors);
+    res.redirect('/addDeveloper');
     return;
   }
   pool.getConnection(function(err, connection) {
@@ -84,7 +82,8 @@ module.exports.addPost = function(req, res, next) {
 module.exports.addGet = function(req, res, next) {
   //res.sendFile(express.static(path.join(__dirname, '../public/add-developer.html')));
   res.render('add-developer.ejs', {
-    user : req.user // get the user out of session and pass to template
+    user : req.user, // get the user out of session and pass to template
+    message : req.flash('addDeveloperErrors')
   });
 }
 

@@ -29,6 +29,15 @@ module.exports.addPost = function(req, res, next) {
   req.checkBody('latitude', 'Latitude is not valid').notEmpty().isFloat({ min: 1, max: 99.99999999 });
   req.checkBody('longitude', 'Longitude is not valid').notEmpty().isFloat({ min: 1, max: 999.99999999 });
 
+  //TODO: how to do form validation for dynamically generated amenities form
+
+  // check the validation object for errors
+  var errors = req.validationErrors();
+  if (errors) {
+    req.flash('addProjectErrors', errors);
+    res.redirect('/addProject');
+    return;
+  }
   pool.getConnection(function(err, connection) {
     var data = [
       req.body.developer,
@@ -39,13 +48,13 @@ module.exports.addPost = function(req, res, next) {
       req.body.no_of_buildings,
       req.body.no_of_units,
       req.body.project_desc,
-      req.body.launch_date,
-      req.body.possession_date,
+      //req.body.launch_date,
+      //req.body.possession_date,
       req.user.username
     ]
     var insertProjectQuery = "INSERT INTO `project` (developer_id, developer_contact_id, project_status_type_id, \
         name, project_area, no_of_buildings, no_of_units, project_desc, launch_date, possession_date, created_by, \
-        created_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
+        created_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now(), ?, now())";
 
     connection.query(insertProjectQuery, data, function(err, rows) {
       if(err) {
@@ -65,14 +74,52 @@ module.exports.addPost = function(req, res, next) {
         req.user.username
       ]
       var insertLocationQuery = "INSERT INTO `location` (project_id, cityarea_id, address, locality, \
-      locality_desc, pincode, latitude, longitude, created_by, created_date) \
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
+          locality_desc, pincode, latitude, longitude, created_by, created_date) \
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now())";
 
-      connection.query(insertLocationQuery, locationData, function(err, rows) {
+      connection.query(insertLocationQuery, locationData, function(err, locationRows) {
         if(err) {
           console.log("Error inserting row into the location table: %s", err);
           return res.status(500).send('Error connecting to database.');
         }
+        //storing amenities with no child value
+        req.body.amenities_nochild.forEach(function(items) {
+          console.log(items.value);
+          var amenitiesData = [
+            rows.insertId,
+            items.value.toString(),
+            req.user.username
+          ]
+          console.log(amenitiesData);
+          var amenitiesQuery = "INSERT INTO `project_amenities` (project_id, amenities_id_list, created_by, \
+              created_date) VALUES (?, ?, ?, now())";
+
+          connection.query(amenitiesQuery, amenitiesData, function(err, amenitiesRows) {
+            if(err) {
+              console.log("Error inserting row into the project_amenities table: %s", err);
+              return res.status(500).send('Error connecting to database.');
+            }
+          });
+        });
+        //storing amenities with child value
+        req.body.amenities_withchild.forEach(function(items) {
+            var amenitiesData = [
+              rows.insertId,
+              items.key,
+              items.value,
+              req.user.username
+            ]
+            console.log(amenitiesData);
+            var amenitiesQuery = "INSERT INTO `project_amenities` (project_id, amenities_id_list, \
+                amenities_child_id, created_by, created_date) VALUES (?, ?, ?, ?, now())";
+
+            connection.query(amenitiesQuery, amenitiesData, function(err, amenitiesRows) {
+              if(err) {
+                console.log("Error inserting row into the project_amenities table: %s", err);
+                return res.status(500).send('Error connecting to database.');
+              }
+            });
+        });
         res.redirect('/browseProject');
       });
     });
@@ -87,19 +134,26 @@ module.exports.addGet = function(req, res, next) {
     selectQuery += "SELECT * FROM project_status_type;";
     selectQuery += "SELECT * FROM city;";
     selectQuery += "SELECT * FROM cityarea;";
+    selectQuery += "SELECT * FROM amenities_parent ORDER BY has_amenities_child;";
+    selectQuery += "SELECT * FROM amenities;";
+    selectQuery += "SELECT * FROM amenities_child;";
     connection.query(selectQuery, function(err, rows) {
       if(err) {
         console.log("Error selecting from the project table: %s", err);
         return res.status(500).send('Error connecting to database.');
       }
-
+      console.log("req.errors: %s", req.errors)
       res.render('add-project.ejs', {
         user : req.user, // get the user out of session and pass to template
         developers : rows[0], //rows returned from the database
         developer_contacts : rows[1],
         project_status_types : rows[2],
         cities : rows[3],
-        cityareas : rows[4]
+        cityareas : rows[4],
+        amenities_parent : rows[5],
+        amenities : rows[6],
+        amenities_child : rows[7],
+        message : req.flash('addProjectErrors')
       });
     });
     connection.release();
@@ -107,20 +161,20 @@ module.exports.addGet = function(req, res, next) {
 }
 
 module.exports.browse = function(req, res, next) {
-  /*pool.getConnection(function(err, connection) {
-    var selectDevQuery = "SELECT * FROM developer";
-    connection.query(selectDevQuery, function(err, rows) {
+  pool.getConnection(function(err, connection) {
+    var selectProjectQuery = "SELECT * FROM project";
+    connection.query(selectProjectQuery, function(err, rows) {
       if(err) {
         console.log("Error selecting from the developer table: %s", err);
         throw err;
       }
-      res.render('browse-developer.ejs', {
+      res.render('browse-project.ejs', {
         user : req.user, // get the user out of session and pass to template
         data : rows //rows returned from the database
       });
     });
     connection.release();
-  });*/
+  });
 }
 
 module.exports.delete = function(req, res, next) {

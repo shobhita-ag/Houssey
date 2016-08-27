@@ -571,30 +571,30 @@
           <a href="layout-fluid-1-sidebar.html"><i class="md md-tab-unselected"></i> <span>Layouts</span></a>
         </li> -->
         <li class="hasSubmenu">
-            <a href="#submenu-developers"><i class="fa fa-anchor"></i> <span>Developers</span></a>
-            <ul id="submenu-developers">
-                <li><a href="/addDeveloper"><i class="fa fa-plus-circle"></i> <span>Add</span></a></li>
-                <li><a href="/browseDeveloper"><i class="fa fa-search"></i> <span>Browse</span></a></li>
-            </ul>
+          <a href="#submenu-developers"><i class="fa fa-anchor"></i> <span>Developers</span></a>
+          <ul id="submenu-developers">
+            <li><a href="/addDeveloper"><i class="fa fa-plus-circle"></i> <span>Add</span></a></li>
+            <li><a href="/browseDeveloper"><i class="fa fa-search"></i> <span>Browse</span></a></li>
+          </ul>
         </li>
         <li class="hasSubmenu">
-            <a href="#submenu-projects"><i class="fa fa-building-o"></i> <span>Projects</span></a>
-            <ul id="submenu-projects">
-                <li><a href="/addProject"><i class="fa fa-plus-circle"></i> <span>Add</span></a></li>
-                <li><a href="/browseProject"><i class="fa fa-search"></i> <span>Browse</span></a></li>
-            </ul>
+          <a href="#submenu-projects"><i class="fa fa-building-o"></i> <span>Projects</span></a>
+          <ul id="submenu-projects">
+            <li><a href="/addProject"><i class="fa fa-plus-circle"></i> <span>Add</span></a></li>
+            <li><a href="/browseProject"><i class="fa fa-search"></i> <span>Browse</span></a></li>
+          </ul>
         </li>
         <li class="hasSubmenu">
-            <a href="#nav-users"><i class="fa fa-users"></i> <span>User Accounts</span></a>
-            <ul id="nav-users">
-                <li><a href="/addUser"><i class="fa fa-user-plus"></i> <span>Add</span></a></li>
-                <li><a href="/browseUser"><i class="fa fa-search"></i> <span>Browse</span></a></li>
-            </ul>
+          <a href="#nav-users"><i class="fa fa-users"></i> <span>User Accounts</span></a>
+          <ul id="nav-users">
+            <li><a href="/addUser"><i class="fa fa-user-plus"></i> <span>Add</span></a></li>
+            <li><a href="/browseUser"><i class="fa fa-search"></i> <span>Browse</span></a></li>
+          </ul>
         </li>
         <li class="hasSubmenu">
-          <a href="#nav-charts"><i class="fa fa-database"></i> <span>Database</span></a>
+          <a href="#nav-datbase"><i class="fa fa-database"></i> <span>Database</span></a>
           <!--TODO:shobhita - Add database enum table crud operations here -->
-          <ul id="nav-charts">
+          <ul id="nav-database">
             <li><a href="charts-morris.html"><i class="fa fa-bar-chart"></i> <span>Morris</span></a></li>
             <li><a href="charts-flot.html"><i class="fa fa-bar-chart"></i> <span>Flot</span></a></li>
           </ul>
@@ -740,189 +740,86 @@
 
   <!-- extra div for emulating position:fixed of the menu -->
   <div class="st-content-inner">
-
     <div class="container-fluid">
       <div class="page-section">
         <div class="row">
           <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
 
             <div class="panel panel-default">
-              <div class="panel-body">
-
-                <!-- show any messages that come back with authentication -->
-                <% if ((typeof message !== 'undefined') && (message.length > 0)) {
-                  message.forEach(function(row){ %>
-                  <div class="alert alert-danger"><%= row.msg %></div>
-                  <% })
-                } %>
-
-                <!-- ADD PROJECT FORM -->
-                <form action="/addProject" method="post">
-                  <h4 class="page-section-heading">Project Basic Information</h4>
-                  <div class="form-group required">
-                    <label for="project_name">Project Name</label>
-                    <input type="text" class="form-control" name="project_name" id="project_name" placeholder="Enter name" maxlength="100" required>
-                  </div>
-                  <div class="form-group" required>
-                    <label for="developer">Developer</label>
-                    <select name="developer" id="developer" class="selectpicker" placeholder="Select developer" data-style="btn-white" data-live-search="true" data-size="5" required>
-                      <% if(developers.length) {
-                        developers.forEach(function(row){ %>
-                      <option value=<%= row.id %>><%= row.name %></option>
-                        <% })
-                      } %>
-                    </select>
-                  </div>
-                  <div class="form-group" required>
-                    <label for="developer_contact">Developer Contact</label>
-                    <select name="developer_contact" id="developer_contact" class="selectpicker" placeholder="Select developer contact" data-style="btn-white" data-live-search="true" data-size="5" required>
-                      <% if(developer_contacts.length) {
-                        developer_contacts.forEach(function(row){ %>
-                      <option value=<%= row.id %>><%= row.name %></option>
-                        <% })
-                      } %>
-                    </select>
-                  </div>
-                  <div class="form-group" required>
-                    <label for="project_status_type">Project Status</label>
-                    <select name="project_status_type" id="project_status_type" class="selectpicker" placeholder="Select project status" data-style="btn-white" data-live-search="true" data-size="5" required>
-                      <% if(project_status_types.length) {
-                        project_status_types.forEach(function(row){ %>
-                      <option value=<%= row.id %>><%= row.type %></option>
-                        <% })
-                      } %>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="project_area">Project Area</label>
-                    <input id="project_area" name="project_area" data-toggle="touch-spin" class="form-control" data-min="0" data-max="999999999.99" data-postfix="sqft" data-step="1" data-decimals="2" type="text" value="0" required/>
-                  </div>
-                  <div class="form-group required">
-                    <label for="no_of_buildings">Number of buildings</label>
-                    <input id="no_of_buildings" name="no_of_buildings" data-toggle="touch-spin" class="form-control" data-min="0" data-max="2147483647" data-step="1" data-decimals="0" type="text" value="1" required/>
-                  </div>
-                  <div class="form-group required">
-                    <label for="no_of_units">Number of units</label>
-                    <input id="no_of_units" name="no_of_units" data-toggle="touch-spin" class="form-control" data-min="0" data-max="2147483647" data-step="1" data-decimals="0" type="text" value="1" required/>
-                  </div>
-                  <div class="form-group required">
-                    <label for="project_desc" class="control-label">Description of the project</label>
-                    <textarea id="project_desc" name="project_desc" class="form-control" rows="5" placeholder="Enter description about the project (max 1000 characters)" maxlength="1000" required></textarea>
-                  </div>
-                  <div class="form-group required">
-                    <label for="launch_date">Launch Date</label>
-                    <input id="launch_date" name="launch_date" type="text" class="form-control datepicker" placeholder="Pick the launch date" required>
-                  </div>
-                  <div class="form-group required">
-                    <label for="possession_date">Possession Date</label>
-                    <input id="possession_date" name="possession_date" type="text" class="form-control datepicker" placeholder="Pick the possession date" required>
-                  </div>
-                  <br/><br/>
-                  <h4 class="page-section-heading">Project Locality Information</h4>
-                  <div class="form-group" required>
-                    <label for="city">City</label>
-                    <select name="city" id="city" class="selectpicker" placeholder="Select city" data-style="btn-white" data-live-search="true" data-size="5" required>
-                      <% if(cities.length) {
-                        cities.forEach(function(row){ %>
-                      <option value=<%= row.id %>><%= row.name %></option>
-                        <% })
-                      } %>
-                    </select>
-                  </div>
-                  <div class="form-group" required>
-                    <label for="city_area">City Area</label>
-                    <select name="city_area" id="city_area" class="selectpicker" placeholder="Select city area" data-style="btn-white" data-live-search="true" data-size="5" required>
-                      <% if(cityareas.length) {
-                        cityareas.forEach(function(row){ %>
-                      <option value=<%= row.id %>><%= row.name %></option>
-                        <% })
-                      } %>
-                    </select>
-                  </div>
-                  <div class="form-group required">
-                    <label for="address">Address</label>
-                    <input id="address" name="address" type="text" class="form-control"  placeholder="Enter address" maxlength="255" required>
-                  </div>
-                  <div class="form-group required">
-                    <label for="locality">Locality</label>
-                    <input id="locality" name="locality" type="text" class="form-control"  placeholder="Enter locality" maxlength="255" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label">Description of the locality</label>
-                    <textarea id="locality_desc" name="locality_desc" class="form-control" rows="5"  placeholder="Enter description about the locality (max 1000 characters)" maxlength="1000" required></textarea>
-                  </div>
-                  <div class="form-group required">
-                    <label for="pincode">Pincode</label>
-                    <input id="pincode" name="pincode" type="text" class="form-control"  placeholder="Enter pincode" maxlength="45" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="latitude">Latitude</label>
-                    <input id="latitude" name="latitude" data-toggle="touch-spin" class="form-control" data-min="0" data-max="99.99999999" data-postfix="&deg;" data-step="0.00000001" data-decimals="8" type="text" value="0" required/>
-                  </div>
-                  <div class="form-group">
-                    <label for="longitude">Longitude</label>
-                    <input id="longitude" name="longitude" data-toggle="touch-spin" class="form-control" data-min="0" data-max="999.99999999" data-postfix="&deg;" data-step="0.00000001" data-decimals="8" type="text" value="0" required/>
-                  </div>
-                  <br/><br/>
-                  <h4 class="page-section-heading">Amenities Information</h4>
-                  <%  var am_index_nochild = 1;
-                      var am_index_withchild = 1;
-                      amenities_parent.forEach(function(parent_row){
-                      if(!parent_row.has_amenities_child) { %>
-                        <div class="form-group" required>
-                          <label for=<%= "amenities_nochild["+am_index_nochild+"][value]" %> class="col-sm-3 control-label"><%= parent_row.name %></label>
-                          <select name=<%= "amenities_nochild["+am_index_nochild+"][value]" %> id=<%= "amenities_nochild["+am_index_nochild+"][value]" %> multiple="multiple" style="width: 100%;" data-toggle="select2" data-placeholder="Select multiple amenities" data-allow-clear="true" required>
+              <!-- Progress table -->
+              <div class="table-responsive">
+                <table class="table v-middle">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Address</th>
+                      <th>Established Date</th>
+                      <th class="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="responsive-table-body">
+                    <% if(data.length) {
+                      data.forEach(function(row){ %>
+                        <tr>
+                          <td><span class="label label-primary"><%= row.name %></span></td>
+                          <td><%= row.address %></td>
+                          <td><%= row.established_date %></td>
+                          <td class="text-right">
+                            <!-- <a href="/editDeveloper/<%= row.id %>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></a> -->
+                            <button data-toggle="edit-developer-modal" data-modal-options="slide-down" class="btn btn-default btn-xs" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></button>
+                            <a href="/deleteDeveloper/<%= row.id %>" class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times"></i></a>
+                          </td>
+                        </tr>
+                          <% })
+                        } else { %>
+                        <tr>
+                          <td colspan="5">NO DATA TO SHOW</td>
+                        </tr>
                           <%
-                          amenities
-                            .filter(function(row) {
-                              return row.amenities_parent_id == parent_row.id;
-                            })
-                            .forEach(function(row){ %>
-                              <option value=<%= row.id %>><%= row.name %></option>
-                            <% })
-                          %>
-                          </select>
-                        </div>
-                        <%
-                        am_index_nochild += 1;
-                      } else {
-                        %>
-                        <h4 class="page-section-heading"><%= parent_row.name %></h4>
-                        <%
-                        amenities
-                          .filter(function(row) {
-                            return row.amenities_parent_id == parent_row.id;
-                          })
-                          .forEach(function(row) { %>
-                            <div class="form-group" required>
-                              <input type="hidden" name=<%= "amenities_withchild["+am_index_withchild+"][key]" %> id=<%= "amenities_withchild["+am_index_withchild+"][key]" %> value=<%= row.id %>>
-                              <label for=<%= "amenities_withchild["+am_index_withchild+"][value]" %>><%= row.name %></label>
-                              <select name=<%= "amenities_withchild["+am_index_withchild+"][value]" %> id=<%= "amenities_withchild["+am_index_withchild+"][value]" %> class="selectpicker" placeholder="Select city area" data-style="btn-white" data-live-search="true" data-size="5" required>
-                                <% amenities_child
-                                    .filter(function(child_row) {
-                                      return child_row.amenities_parent_id == parent_row.id;
-                                    })
-                                    .forEach(function(child_row) { %>
-                                      <option value=<%= child_row.id %>><%= child_row.name %></option>
-                                  <% })
-                                %>
-                              </select>
-                            </div>
-                          <%
-                          am_index_withchild += 1;
-                        })
-                      }
-                    })
-                  %>
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-              </div>
+                        }  %>
+                    </tbody>
+                  </table>
+                </div>
+                  <!--TODO: shobhita - implement pagination here -->
+                  <!-- // Progress table -->
+                  <!--<div class="panel-footer padding-none text-center">
+                  <ul class="pagination">
+                  <li class="disabled"><a href="#">&laquo;</a></li>
+                  <li class="active"><a href="#">1</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">4</a></li>
+                  <li><a href="#">5</a></li>
+                  <li><a href="#">&raquo;</a></li>
+                </ul>
+              </div>-->
             </div>
           </div>
         </div>
       </div>
+      <!-- Create the modal dynamically via Handlebars -->
+      <script id="tk-modal-demo" type="text/x-handlebars-template">
+        <div class="modal fade{{#if modalOptions}} {{ modalOptions }}{{/if}}" id="{{ id }}">
+          <div class="modal-dialog{{#if dialogOptions}} {{ dialogOptions }}{{/if}}">
+            <div class="v-cell">
+              <div class="modal-content{{#if contentOptions}} {{ contentOptions }}{{/if}}">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aperiam atque consequuntur dolore fugiat fugit hic in ipsam iure magnam maxime quaerat, quam qui repellat repellendus temporibus vel vitae voluptate!
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </script>
     </div>
-
   </div>
   <!-- /st-content-inner -->
 

@@ -21,10 +21,8 @@ module.exports.addPost = function(req, res, next) {
   var errors = req.validationErrors();
   console.log(errors);
   if (errors) {
-    res.render('add-user', {
-      user : req.user,
-      message : errors
-    });
+    req.flash('addUserErrors', errors);
+    res.redirect('/addUser');
     return;
   }
   pool.getConnection(function(err, connection) {
@@ -71,7 +69,8 @@ module.exports.addPost = function(req, res, next) {
 module.exports.addGet = function(req, res, next) {
   //res.sendFile(express.static(path.join(__dirname, '../public/add-user.html')));
   res.render('add-user.ejs', {
-    user : req.user // get the user out of session and pass to template
+    user : req.user, // get the user out of session and pass to template
+    message : req.flash('addUserErrors')
   });
 }
 

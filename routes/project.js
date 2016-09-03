@@ -182,26 +182,18 @@ module.exports.browse = function(req, res, next) {
 }
 
 module.exports.delete = function(req, res, next) {
-  /*var id = req.params.id;
+  var id = req.params.id;
   pool.getConnection(function(err, connection) {
-    var deleteDevQuery = "DELETE FROM developer WHERE id=?";
-    connection.query(deleteDevQuery, [id], function(err, rows) {
+    var deleteQuery = "DELETE FROM project WHERE id=?";
+    connection.query(deleteQuery, [id], function(err, rows) {
       if(err) {
-        console.log("Error deleting row from the developer table: %s", err);
-        throw err;
+        console.log("Error deleting row from the project table: %s", err);
+        return res.status(500).send('Error connecting to database.');
       }
-
-      var deleteDevContactQuery = "DELETE FROM developer_contact WHERE developer_id=?";
-      connection.query(deleteDevContactQuery, [id], function(err, rows) {
-        if(err) {
-          console.log("Error deleting row from the developer-contact table: %s", err);
-          throw err;
-        }
-        res.redirect('/browseDeveloper');
-      });
+      res.redirect('/browseProject');
     });
     connection.release();
-  });*/
+  });
 }
 
 module.exports.editGet = function(req, res, next) {

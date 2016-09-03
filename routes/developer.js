@@ -89,15 +89,17 @@ module.exports.addGet = function(req, res, next) {
 
 module.exports.browse = function(req, res, next) {
   pool.getConnection(function(err, connection) {
-    var selectDevQuery = "SELECT * FROM developer";
-    connection.query(selectDevQuery, function(err, rows) {
+    var selectQuery = "SELECT * FROM developer;";
+    selectQuery += "SELECT * FROM developer_contact;";
+    connection.query(selectQuery, function(err, rows) {
       if(err) {
         console.log("Error selecting from the developer table: %s", err);
         return res.status(500).send('Error connecting to database.');
       }
       res.render('browse-developer.ejs', {
         user : req.user, // get the user out of session and pass to template
-        developers : rows //rows returned from the database
+        developers : rows[0],
+        developer_contacts : rows[1]
       });
     });
     connection.release();

@@ -162,15 +162,19 @@ module.exports.addGet = function(req, res, next) {
 
 module.exports.browse = function(req, res, next) {
   pool.getConnection(function(err, connection) {
-    var selectProjectQuery = "SELECT * FROM project";
-    connection.query(selectProjectQuery, function(err, rows) {
+    var selectQuery = "SELECT * FROM project;";
+    selectQuery += "SELECT * FROM developer;";
+    selectQuery += "SELECT * FROM developer_contact;";
+    connection.query(selectQuery, function(err, rows) {
       if(err) {
-        console.log("Error selecting from the developer table: %s", err);
-        throw err;
+        console.log("Error selecting from the project table: %s", err);
+        return res.status(500).send(' Error connecting to database.');
       }
       res.render('browse-project.ejs', {
         user : req.user, // get the user out of session and pass to template
-        data : rows //rows returned from the database
+        projects : rows[0],
+        developers : rows[1],
+        developer_contacts : rows[2]
       });
     });
     connection.release();

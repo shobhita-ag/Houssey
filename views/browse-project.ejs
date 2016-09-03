@@ -752,22 +752,43 @@
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Address</th>
-                      <th>Established Date</th>
+                      <th>Developer</th>
+                      <th>Developer Contact</th>
+                      <th>Project Area</th>
+                      <th>Launch Date</th>
+                      <th>Possession Date</th>
                       <th class="text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody id="responsive-table-body">
-                    <% if(data.length) {
-                      data.forEach(function(row){ %>
+                    <% if(projects.length) {
+                      projects.forEach(function(p_row) { %>
                         <tr>
-                          <td><span class="label label-primary"><%= row.name %></span></td>
-                          <td><%= row.address %></td>
-                          <td><%= row.established_date %></td>
+                          <td><span class="label label-primary"><%= p_row.name %></span></td>
+                          <%
+                          developers
+                          .filter(function(d_row) {
+                            return d_row.id == p_row.developer_id;
+                          })
+                          .forEach(function(d_row) { %>
+                          <td><%= d_row.name %></td>
+                          <%
+                          })
+                          developer_contacts
+                          .filter(function(d_c_row) {
+                            return d_c_row.id == p_row.developer_contact_id;
+                          })
+                          .forEach(function(d_c_row) { %>
+                          <td><%= d_c_row.name%></td>
+                          <%
+                          })
+                          %>
+                          <td><%= p_row.project_area%></td>
+                          <td><%= p_row.launch_date%></td>
+                          <td><%= p_row.possession_date%></td>
                           <td class="text-right">
-                            <!-- <a href="/editDeveloper/<%= row.id %>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></a> -->
                             <button data-toggle="edit-developer-modal" data-modal-options="slide-down" class="btn btn-default btn-xs" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></button>
-                            <a href="/deleteDeveloper/<%= row.id %>" class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times"></i></a>
+                            <a href="/deleteProject/<%= p_row.id %>" class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-times"></i></a>
                           </td>
                         </tr>
                           <% })

@@ -97,7 +97,7 @@ module.exports.browse = function(req, res, next) {
       }
       res.render('browse-developer.ejs', {
         user : req.user, // get the user out of session and pass to template
-        data : rows //rows returned from the database
+        developers : rows //rows returned from the database
       });
     });
     connection.release();
